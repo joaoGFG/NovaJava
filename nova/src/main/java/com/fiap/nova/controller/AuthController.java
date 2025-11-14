@@ -1,41 +1,32 @@
 package com.fiap.nova.controller;
 
-import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-import com.fiap.nova.model.User;
+import com.fiap.nova.dto.LoginRequest;
+import com.fiap.nova.dto.TokenResponse;
 import com.fiap.nova.service.TokenService;
-import com.fiap.nova.service.UserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class AuthController {
 
     private final TokenService tokenService;
-    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
     
-    public AuthController(TokenService tokenService, UserService userService) {
+    AuthController(TokenService tokenService, AuthenticationManager authenticationManager) {
         this.tokenService = tokenService;
-        this.userService = userService;
+        this.authenticationManager = authenticationManager;
     }
-
-    public record TokenResponse(String token, String username) {}
 
     @PostMapping("/login")
-    public TokenResponse login(Authentication authentication) {
-        String username = authentication.getName();
-        String token = tokenService.generateToken(username);
-        return new TokenResponse(token, username);
-    }
-
-    @PostMapping("/register")
-    public TokenResponse register(@RequestBody User user) {
-        // Cria o usuário no banco
-        User savedUser = userService.createUser(user);
-        
-        // Gera token automaticamente (login automático após cadastro)
-        String token = tokenService.generateToken(savedUser.getEmail());
-        
-        return new TokenResponse(token, savedUser.getEmail());
+    public TokenResponse login(@Valid @RequestBody LoginRequest request) {
+        var authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(request.email(), request.password())
+        );
+        return tokenService.generateToken(authentication);
     }
 }
 

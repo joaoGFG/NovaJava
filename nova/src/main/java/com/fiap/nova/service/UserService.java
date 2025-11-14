@@ -25,11 +25,10 @@ public class UserService {
     }
 
     public User createUser(User user) {
-
-        // Criptografa a senha com BCrypt
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
-        // Salva no banco
+        if (user.getRole() == null || user.getRole().isBlank()) {
+            user.setRole("ROLE_USER");
+        }
         return userRepository.save(user);
     }
 

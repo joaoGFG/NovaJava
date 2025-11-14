@@ -7,11 +7,12 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.*;
 
+import com.fiap.nova.dto.RegisterRequest;
 import com.fiap.nova.dto.UserFilters;
 import com.fiap.nova.model.User;
 import com.fiap.nova.service.UserService;
 
-
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -23,10 +24,16 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping
+    public EntityModel<User> create(@Valid @RequestBody RegisterRequest request) {
+        var user = userService.createUser(request.toModel());
+        return user.toEntityModel();
+    }
+
     @GetMapping
     public PagedModel<EntityModel<User>> getAll(
             UserFilters filters,
-            @PageableDefault(size = 10, sort = "name") Pageable pageable,
+            @PageableDefault(size = 10, sort = "nome") Pageable pageable,
             PagedResourcesAssembler<User> assembler
     ) {
         var page = userService.findAll(pageable, filters);
