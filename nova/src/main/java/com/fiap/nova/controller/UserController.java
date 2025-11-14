@@ -8,7 +8,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.*;
 
 import com.fiap.nova.dto.RegisterRequest;
-import com.fiap.nova.dto.UserFilters;
+import com.fiap.nova.filters.UserFilters;
 import com.fiap.nova.model.User;
 import com.fiap.nova.service.UserService;
 

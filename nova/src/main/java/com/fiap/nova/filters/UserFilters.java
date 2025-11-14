@@ -1,4 +1,4 @@
-package com.fiap.nova.dto;
+package com.fiap.nova.filters;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

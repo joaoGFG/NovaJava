@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.fiap.nova.dto.UserFilters;
+import com.fiap.nova.filters.UserFilters;
 import com.fiap.nova.model.User;
 import com.fiap.nova.repository.UserRepository;
 import com.fiap.nova.specification.UserSpecification;

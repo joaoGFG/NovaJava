@@ -7,26 +7,26 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record RegisterRequest(
-    @NotBlank(message = "Nome é obrigatório")
+    @NotBlank(message = "Name is required")
     @Size(max = 200)
-    String nome,
+    String name,
     
-    @NotBlank(message = "Email é obrigatório")
+    @NotBlank(message = "Email is required")
     @Email
     @Size(max = 200)
     String email,
     
-    @NotBlank(message = "Senha é obrigatória")
+    @NotBlank(message = "Password is required")
     @Size(min = 6, max = 100)
     String password,
     
-    @NotBlank(message = "Objetivo profissional é obrigatório")
+    @NotBlank(message = "Professional goal is required")
     @Size(max = 255)
     String professionalGoal
 ) {
     public User toModel() {
         return User.builder()
-                .nome(nome)
+                .name(name)
                 .email(email)
                 .password(password)
                 .professionalGoal(professionalGoal)

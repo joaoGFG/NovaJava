@@ -2,7 +2,7 @@ package com.fiap.nova.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.fiap.nova.dto.UserFilters;
+import com.fiap.nova.filters.UserFilters;
 import com.fiap.nova.model.User;
 
 public class UserSpecification {
