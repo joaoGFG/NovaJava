@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.hateoas.EntityModel;
 
 import java.time.LocalDateTime;
 
@@ -38,5 +39,9 @@ public class AIInteraction {
     @CreationTimestamp
     @Column(name = "nova_data_interacao", updatable = false)
     private LocalDateTime interactionDate;
+
+    public EntityModel<AIInteraction> toEntityModel() {
+        return EntityModel.of(this);
+    }
 
 }

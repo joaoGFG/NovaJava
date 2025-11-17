@@ -29,13 +29,13 @@ public class PerplexityService {
 
     public String chatWithAI(Long userId, String userMessage) {
 
-        // Debug: verificar se a chave está sendo carregada
-        System.out.println("API Key carregada: " + (apiKey != null && !apiKey.isBlank() ? "SIM (primeiros 10 chars: " + apiKey.substring(0, Math.min(10, apiKey.length())) + "...)" : "NÃO - VAZIA OU NULL"));
+        // Debug: check if API key is loaded
+        System.out.println("API Key loaded: " + (apiKey != null && !apiKey.isBlank() ? "YES (first 10 chars: " + apiKey.substring(0, Math.min(10, apiKey.length())) + "...)" : "NO - EMPTY OR NULL"));
         System.out.println("API URL: " + apiUrl);
 
-        // Busca usuário no banco
+        // Find user in database
         User usuario = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + userId));
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
 
         // Configura requisição HTTP
         RestTemplate restTemplate = new RestTemplate();
@@ -60,13 +60,13 @@ public class PerplexityService {
         ResponseEntity<Map> response =
                 restTemplate.exchange(apiUrl, HttpMethod.POST, entity, Map.class);
 
-        // 🔹 3. Extrai resposta da IA
+        // Extract AI response
         Map resp = response.getBody();
         Map firstChoice = ((List<Map>) resp.get("choices")).get(0);
         Map message = (Map) firstChoice.get("message");
         String respostaIA = (String) message.get("content");
 
-        // 🔹 4. Salva interação no banco (LOCALDATE é gerado automaticamente)
+        // Save interaction in database (LOCALDATE is generated automatically)
         AIInteraction interacao = AIInteraction.builder()
                 .user(usuario)
                 .userMessage(userMessage)
