@@ -62,4 +62,19 @@ public class SkillController {
         var skill = skillService.getSkillById(id);
         return skill.toEntityModel();
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update skill", description = "Updates an existing skill")
+    public EntityModel<Skill> updateSkill(@PathVariable Long id, @RequestBody @Valid Skill skill) {
+        log.info("Updating skill with id: {}", id);
+        var updatedSkill = skillService.updateSkill(id, skill);
+        return updatedSkill.toEntityModel();
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete skill", description = "Deletes a skill by ID")
+    public void deleteSkill(@PathVariable Long id) {
+        log.info("Deleting skill with id: {}", id);
+        skillService.deleteSkill(id);
+    }
 }

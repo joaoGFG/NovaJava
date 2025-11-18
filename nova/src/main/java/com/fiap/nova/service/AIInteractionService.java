@@ -34,4 +34,9 @@ public class AIInteractionService {
         return aiInteractionRepository.findById(id)
                 .orElse(null);
     }
+
+    public void deleteInteraction(Long id) {
+        AIInteraction interaction = getInteractionById(id);
+        aiInteractionRepository.delete(interaction);
+    }
 }

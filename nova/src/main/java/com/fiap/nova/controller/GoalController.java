@@ -62,4 +62,19 @@ public class GoalController {
         var goal = goalService.getGoalById(id);
         return goal.toEntityModel();
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update goal", description = "Updates an existing goal")
+    public EntityModel<Goal> updateGoal(@PathVariable Long id, @RequestBody @Valid Goal goal) {
+        log.info("Updating goal with id: {}", id);
+        var updatedGoal = goalService.updateGoal(id, goal);
+        return updatedGoal.toEntityModel();
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete goal", description = "Deletes a goal by ID")
+    public void deleteGoal(@PathVariable Long id) {
+        log.info("Deleting goal with id: {}", id);
+        goalService.deleteGoal(id);
+    }
 }

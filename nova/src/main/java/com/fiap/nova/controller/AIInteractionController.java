@@ -62,4 +62,11 @@ public class AIInteractionController {
         var interaction = aiInteractionService.getInteractionById(id);
         return interaction.toEntityModel();
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete interaction", description = "Deletes an AI interaction by ID")
+    public void deleteInteraction(@PathVariable Long id) {
+        log.info("Deleting AI interaction with id: {}", id);
+        aiInteractionService.deleteInteraction(id);
+    }
 }

@@ -23,8 +23,6 @@ public class GoalService {
     }
 
     public Goal createGoal(Goal goal, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
         return goalRepository.save(goal);
     }
 
@@ -38,6 +36,24 @@ public class GoalService {
 
     public Goal getGoalById(Long id) {
         return goalRepository.findById(id)
-                .orElse(null);
+                    .orElse(null);
+    }
+
+    public Goal updateGoal(Long id, Goal goalDetails) {
+        Goal goal = getGoalById(id);
+        goal.setTitle(goalDetails.getTitle());
+        goal.setDescription(goalDetails.getDescription());
+        if (goalDetails.getCategory() != null) {
+            goal.setCategory(goalDetails.getCategory());
+        }
+        if (goalDetails.getStatus() != null) {
+            goal.setStatus(goalDetails.getStatus());
+        }
+        return goalRepository.save(goal);
+    }
+
+    public void deleteGoal(Long id) {
+        Goal goal = getGoalById(id);
+        goalRepository.delete(goal);
     }
 }
