@@ -1,0 +1,66 @@
+# Build stage - Using Server Core for build tools
+FROM mcr.microsoft.com/windows/servercore:ltsc2022 AS build
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+# Install OpenJDK 17
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+    Invoke-WebRequest -Uri 'https://aka.ms/download-jdk/microsoft-jdk-17.0.10-windows-x64.zip' -OutFile 'jdk.zip'; \
+    Expand-Archive jdk.zip -DestinationPath C:\; \
+    Remove-Item jdk.zip; \
+    Get-ChildItem C:\ -Directory | Where-Object { $_.Name -like 'jdk*' } | Rename-Item -NewName 'jdk'
+
+# Install Maven
+RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+    Invoke-WebRequest -Uri 'https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.zip' -OutFile 'maven.zip'; \
+    Expand-Archive maven.zip -DestinationPath C:\; \
+    Remove-Item maven.zip; \
+    Rename-Item C:\apache-maven-3.9.6 C:\maven
+
+# Set environment variables
+ENV JAVA_HOME=C:\jdk \
+    MAVEN_HOME=C:\maven
+
+RUN $env:PATH = $env:JAVA_HOME + '\bin;' + $env:MAVEN_HOME + '\bin;' + $env:PATH; \
+    [Environment]::SetEnvironmentVariable('PATH', $env:PATH, [EnvironmentVariableTarget]::Machine)
+
+WORKDIR C:\app
+
+# Copy Maven wrapper and pom.xml
+COPY pom.xml .
+COPY .mvn .mvn
+COPY mvnw .
+COPY mvnw.cmd .
+
+# Download dependencies (cached layer)
+RUN C:\maven\bin\mvn dependency:go-offline -B
+
+# Copy source code
+COPY src .\src
+
+# Build the application
+RUN C:\maven\bin\mvn clean package -DskipTests
+
+# Runtime stage - Using Nano Server for smaller size
+FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
+
+# Copy OpenJDK from build stage
+COPY --from=build C:\jdk C:\jdk
+
+# Set environment variables
+ENV JAVA_HOME=C:\jdk
+
+USER ContainerAdministrator
+RUN setx /M PATH "%JAVA_HOME%\bin;%PATH%"
+USER ContainerUser
+
+WORKDIR C:\app
+
+# Copy the built jar from build stage
+COPY --from=build C:\app\target\*.jar app.jar
+
+# Expose port
+EXPOSE 8000
+
+# Run the application
+ENTRYPOINT ["C:\\jdk\\bin\\java.exe", "-jar", "app.jar"]
