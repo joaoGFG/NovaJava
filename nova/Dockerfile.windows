@@ -38,11 +38,11 @@ RUN C:\\maven\\bin\\mvn dependency:go-offline -B
 # Copy source code
 COPY src C:\\app\\src\\
 
-# Build the application with verbose output
-RUN C:\\maven\\bin\\mvn clean package -DskipTests -X ; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+# Build the application
+RUN C:\\maven\\bin\\mvn clean package -DskipTests
 
-# List target directory to verify JAR was created (will fail if build failed)
-RUN powershell -Command "if (Test-Path C:\\app\\target) { Get-ChildItem C:\\app\\target -Recurse | Select-Object FullName } else { Write-Error 'Target directory not found! Build failed.' ; exit 1 }"
+# List target directory to verify JAR was created
+RUN if (Test-Path C:\\app\\target) { Get-ChildItem C:\\app\\target -Name } else { Write-Error 'Target directory not found!' ; exit 1 }
 
 # Expose port
 EXPOSE 8000
