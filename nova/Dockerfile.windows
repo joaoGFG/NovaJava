@@ -1,5 +1,5 @@
-# Build stage - Using Server Core for build tools
-FROM mcr.microsoft.com/windows/servercore:ltsc2019 AS build
+# Single-stage build to avoid multi-stage copy bug on Windows
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -18,8 +18,8 @@ RUN [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tl
     Rename-Item C:\apache-maven-3.9.6 C:\maven
 
 # Set environment variables
-ENV JAVA_HOME=C:\jdk \
-    MAVEN_HOME=C:\maven
+ENV JAVA_HOME=C:\\jdk \
+    MAVEN_HOME=C:\\maven
 
 RUN $env:PATH = $env:JAVA_HOME + '\bin;' + $env:MAVEN_HOME + '\bin;' + $env:PATH; \
     [Environment]::SetEnvironmentVariable('PATH', $env:PATH, [EnvironmentVariableTarget]::Machine)
@@ -41,23 +41,8 @@ COPY src C:\\app\\src\\
 # Build the application
 RUN C:\\maven\\bin\\mvn clean package -DskipTests
 
-# Runtime stage - Using Server Core (Nano doesn't support all features)
-FROM mcr.microsoft.com/windows/servercore:ltsc2019
-
-# Copy OpenJDK from build stage
-COPY --from=build C:\\jdk C:\\jdk
-
-# Set environment variables
-ENV JAVA_HOME=C:\\jdk
-RUN setx /M PATH "%JAVA_HOME%\\bin;%PATH%"
-
-WORKDIR C:\\app
-
-# Copy the built jar from build stage
-COPY --from=build C:\\app\\target\\*.jar C:\\app\\app.jar
-
 # Expose port
 EXPOSE 8000
 
-# Run the application
-ENTRYPOINT ["C:\\jdk\\bin\\java.exe", "-jar", "C:\\app\\app.jar"]
+# Run the application (JAR will be in target/)
+ENTRYPOINT ["C:\\jdk\\bin\\java.exe", "-jar", "target\\nova-0.0.1-SNAPSHOT.jar"]
