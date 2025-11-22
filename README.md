@@ -171,32 +171,19 @@ http://localhost:8080/swagger-ui.html
 
 ### Endpoints Principais
 
-#### Autenticação
-- `POST /api/auth/register` - Registrar novo usuário
-- `POST /api/auth/login` - Login e obtenção de token JWT
+<img width="1208" height="675" alt="image" src="https://github.com/user-attachments/assets/ef861a4f-3b47-4a1c-86ec-8156b9c4bb98" />
 
-#### Usuários
-- `GET /api/users` - Listar usuários (paginado e filtrado)
-- `GET /api/users/{id}` - Buscar usuário por ID
-- `PUT /api/users/{id}` - Atualizar usuário
-- `DELETE /api/users/{id}` - Deletar usuário
+<img width="1194" height="644" alt="image" src="https://github.com/user-attachments/assets/e153f1e4-fdf7-48d4-a25c-a0b6e0070497" />
 
-#### Metas
-- `POST /api/goals` - Criar nova meta
-- `GET /api/goals` - Listar metas (paginado e filtrado)
-- `GET /api/goals/{id}` - Buscar meta por ID
-- `PUT /api/goals/{id}` - Atualizar meta
-- `DELETE /api/goals/{id}` - Deletar meta
+<img width="1221" height="846" alt="image" src="https://github.com/user-attachments/assets/4a07e728-839d-4a26-890d-815b39cf9c79" />
 
-#### Habilidades
-- `POST /api/skills` - Criar nova habilidade
-- `GET /api/skills` - Listar habilidades (paginado e filtrado)
-- `GET /api/skills/{id}` - Buscar habilidade por ID
-- `PUT /api/skills/{id}` - Atualizar habilidade
-- `DELETE /api/skills/{id}` - Deletar habilidade
+<img width="1227" height="847" alt="image" src="https://github.com/user-attachments/assets/d36d4673-1803-423f-a10c-0957ca8687af" />
 
-#### Chatbot
-- `POST /api/chatbot` - Enviar mensagem para o chatbot
+<img width="1231" height="885" alt="image" src="https://github.com/user-attachments/assets/1ac56914-d4ca-434f-b55d-498b881ad782" />
+
+<img width="1219" height="813" alt="image" src="https://github.com/user-attachments/assets/49ff8d2c-05ca-47e3-b938-8c5f60cd1ba8" />
+
+<img width="1237" height="777" alt="image" src="https://github.com/user-attachments/assets/3e32062d-aecc-4e62-b8f7-645d8cec206a" />
 
 ### Autenticação JWT
 
