@@ -54,7 +54,7 @@ public class User implements UserDetails {
 	@Transient
 	private String role;
 
-	@ManyToMany
+	@OneToMany
 	@JoinTable(
 		name = "NOVA_USUARIO_METAS",
 		joinColumns = @JoinColumn(name = "nova_id_usuario"),
@@ -62,7 +62,7 @@ public class User implements UserDetails {
 	)
 	private List<Goal> goals;
 
-	@ManyToMany
+	@OneToMany
 	@JoinTable(
 		name = "NOVA_USUARIO_SKILLS_GOALS",
 		joinColumns = @JoinColumn(name = "nova_id_usuario"),

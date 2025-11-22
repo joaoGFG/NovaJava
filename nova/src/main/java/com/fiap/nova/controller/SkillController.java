@@ -16,8 +16,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-
 @Slf4j
 @RestController
 @RequestMapping("/skills")
@@ -31,25 +29,15 @@ public class SkillController {
     }
 
     @GetMapping
-    @Operation(summary = "List skills with pagination", description = "Returns paginated list of skills for a specific user or all skills if no userId provided")
-    public PagedModel<EntityModel<Skill>> getAll(
-            @RequestParam(required = false) Long userId,
-            @PageableDefault(size = 10, sort = "type") Pageable pageable,
+    @Operation(summary = "List skills by user", description = "Returns paginated list of skills for a specific user")
+    public PagedModel<EntityModel<Skill>> getSkillsByUser(
+            @RequestParam Long userId, 
+            @PageableDefault(size = 10, sort = "name") Pageable pageable,
             PagedResourcesAssembler<Skill> assembler) {
-        log.info("Listing paginated skills for userId: {} - page: {}, size: {}", userId, pageable.getPageNumber(), pageable.getPageSize());
         
-        var page = userId != null 
-            ? skillService.listSkillsByUser(userId, pageable)
-            : skillService.listAllPaginated(pageable);
-            
+        log.info("Listing paginated skills for userId: {}", userId);
+        var page = skillService.listSkillsByUser(userId, pageable);
         return assembler.toModel(page, Skill::toEntityModel);
-    }
-
-    @GetMapping("/all")
-    @Operation(summary = "List all skills without pagination", description = "Returns complete list of skills")
-    public List<Skill> listAll() {
-        log.info("Listing all skills");
-        return skillService.listAll();
     }
 
     @PostMapping
@@ -61,10 +49,13 @@ public class SkillController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get skill by ID", description = "Returns a specific skill with HATEOAS links")
+    @Operation(summary = "Get skill by ID", description = "Returns a specific skill")
     public EntityModel<Skill> getById(@PathVariable Long id) {
         log.info("Getting skill with id: {}", id);
         var skill = skillService.getSkillById(id);
+        if (skill == null) {
+            throw new RuntimeException("Skill not found");
+        }
         return skill.toEntityModel();
     }
 

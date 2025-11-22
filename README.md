@@ -346,7 +346,9 @@ nova/
 └── README.md
 ```
 
-## 🛠️ Solução de Problemas
+## 🛠️ Coleção Postman:
+
+https://cloudy-shadow-8140611.postman.co/workspace/My-Workspace~181a7838-1c82-4701-819f-ec9b6ab67aea/collection/45051985-903d7849-8ff5-44b0-a719-b5a9b623cb8b?action=share&creator=45051985
 
 ### Erro de Conexão com Banco de Dados
 

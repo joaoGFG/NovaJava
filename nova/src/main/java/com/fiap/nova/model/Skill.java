@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 
 @Entity
-@Table(name = "NOVA_SKILLS") // Nome de tabela mais limpo
+@Table(name = "NOVA_SKILLS")
 @Data
 @Builder
 @NoArgsConstructor

@@ -29,6 +29,7 @@ public class UserController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserResponse> create(@Valid @RequestBody RegisterRequest request) {
         var user = userService.createUser(request.toModel());
         return ResponseEntity.ok(UserResponse.from(user));

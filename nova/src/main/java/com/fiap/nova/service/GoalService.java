@@ -24,12 +24,11 @@ public class GoalService {
     }
 
     public Page<Goal> listGoalsByUser(Long userId, Pageable pageable) {
-        if (userId == null) {
-            return Page.empty();
-        }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
         List<Goal> userGoals = user.getGoals();
+        
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), userGoals.size());
         
@@ -39,20 +38,15 @@ public class GoalService {
     }
 
     public Goal createGoal(Goal goal, Long userId) {
-        Goal savedGoal = goalRepository.save(goal);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        
+        Goal savedGoal = goalRepository.save(goal);
+        
         user.getGoals().add(savedGoal);
         userRepository.save(user);
+        
         return savedGoal;
-    }
-
-    public List<Goal> listAll() {
-        return goalRepository.findAll();
-    }
-
-    public Page<Goal> listAllPaginated(Pageable pageable) {
-        return goalRepository.findAll(pageable);
     }
 
     public Goal getGoalById(Long id) {
@@ -62,27 +56,21 @@ public class GoalService {
 
     public Goal updateGoal(Long goalId, Long userId, Goal goalDetails) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
         
         Goal goal = getGoalById(goalId);
         if (goal == null) {
-            throw new RuntimeException("Goal not found: " + goalId);
+            throw new RuntimeException("Goal not found");
         }
-        
-        // Verifica se a goal pertence ao usuário
+
         if (!user.getGoals().contains(goal)) {
             throw new RuntimeException("Goal does not belong to user: " + userId);
         }
         
         goal.setTitle(goalDetails.getTitle());
         goal.setDescription(goalDetails.getDescription());
-        
-        if (goalDetails.getCategory() != null) {
-            goal.setCategory(goalDetails.getCategory());
-        }
-        if (goalDetails.getStatus() != null) {
-            goal.setStatus(goalDetails.getStatus());
-        }
+        goal.setCategory(goalDetails.getCategory()); 
+        goal.setStatus(goalDetails.getStatus());
         
         return goalRepository.save(goal);
     }
@@ -91,21 +79,16 @@ public class GoalService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
         
-        Goal goal = getGoalById(goalId);
+        Goal goal = getGoalById(goalId);      
         if (goal == null) {
-            throw new RuntimeException("Goal not found: " + goalId);
+             throw new RuntimeException("Goal not found");
         }
-        
-        // Verifica se a goal pertence ao usuário
+
         if (!user.getGoals().contains(goal)) {
             throw new RuntimeException("Goal does not belong to user: " + userId);
         }
-        
-        // Remove a goal do usuário
         user.getGoals().remove(goal);
         userRepository.save(user);
-        
-        // Deleta a goal do banco
         goalRepository.delete(goal);
     }
 }

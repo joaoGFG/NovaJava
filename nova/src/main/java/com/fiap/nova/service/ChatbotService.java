@@ -4,7 +4,6 @@ import com.fiap.nova.dto.ChatMessageResponse;
 import com.fiap.nova.model.AIInteraction;
 import com.fiap.nova.model.User;
 import com.fiap.nova.model.Skill;
-import com.fiap.nova.model.Goal;
 import com.fiap.nova.repository.AIInteractionRepository;
 import com.fiap.nova.repository.UserRepository;
 
@@ -14,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,20 +38,19 @@ public class ChatbotService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Busca as últimas 50 interações (para não carregar o banco todo)
+        // Search for last 50 messages
         PageRequest pageRequest = PageRequest.of(0, 50, Sort.by(Sort.Direction.DESC, "id"));
         List<AIInteraction> interactions = aiInteractionRepository.findByUser(user, pageRequest);
         
-        // Inverte para ordem cronológica (Antigo -> Novo)
         Collections.reverse(interactions);
 
         List<ChatMessageResponse> chatHistory = new ArrayList<>();
 
         for (AIInteraction interaction : interactions) {
-            // Adiciona a pergunta do usuário
+            // Add User question
             chatHistory.add(new ChatMessageResponse("user", interaction.getUserMessage()));
             
-            // Adiciona a resposta da IA (se houver)
+            // Add IA response
             if (interaction.getAiResponse() != null) {
                 chatHistory.add(new ChatMessageResponse("bot", interaction.getAiResponse()));
             }

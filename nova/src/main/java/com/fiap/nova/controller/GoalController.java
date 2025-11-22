@@ -29,13 +29,13 @@ public class GoalController {
     }
 
     @GetMapping
-    @Operation(summary = "List all goals with pagination", description = "Returns paginated list of goals for a specific user")
-    public PagedModel<EntityModel<Goal>> getAll(
-            @RequestParam(required = false) Long userId, 
+    @Operation(summary = "List goals by user", description = "Returns paginated list of goals for a specific user")
+    public PagedModel<EntityModel<Goal>> getGoalsByUser(
+            @RequestParam Long userId, 
             @PageableDefault(size = 10, sort = "title") Pageable pageable,
             PagedResourcesAssembler<Goal> assembler) {
         
-        log.info("Listing paginated goals for userId: {} - page: {}, size: {}", userId, pageable.getPageNumber(), pageable.getPageSize());
+        log.info("Listing paginated goals for userId: {} - page: {}", userId, pageable.getPageNumber());
         
         var page = goalService.listGoalsByUser(userId, pageable);
         return assembler.toModel(page, Goal::toEntityModel);
@@ -45,7 +45,7 @@ public class GoalController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create new goal", description = "Creates a new goal linked to a user")
     public EntityModel<Goal> createGoal(@RequestBody @Valid Goal goal, @RequestParam Long userId) {
-        log.info("Creating goal: {} for userId: {}", goal, userId);
+        log.info("Creating goal for userId: {}", userId);
         var newGoal = goalService.createGoal(goal, userId);
         return newGoal.toEntityModel();
     }
@@ -53,7 +53,6 @@ public class GoalController {
     @GetMapping("/{id}")
     @Operation(summary = "Get goal by ID", description = "Returns a specific goal with HATEOAS links")
     public EntityModel<Goal> getById(@PathVariable Long id) {
-        log.info("Getting goal with id: {}", id);
         var goal = goalService.getGoalById(id);
         if (goal == null) {
             throw new RuntimeException("Goal not found");
@@ -64,7 +63,7 @@ public class GoalController {
     @PutMapping("/{id}")
     @Operation(summary = "Update goal", description = "Updates an existing goal for a specific user")
     public EntityModel<Goal> updateGoal(@PathVariable Long id, @RequestParam Long userId, @RequestBody @Valid Goal goal) {
-        log.info("Updating goal with id: {} for userId: {}", id, userId);
+        log.info("Updating goal {} for userId: {}", id, userId);
         var updatedGoal = goalService.updateGoal(id, userId, goal);
         return updatedGoal.toEntityModel();
     }
@@ -73,7 +72,7 @@ public class GoalController {
     @ResponseStatus(HttpStatus.NO_CONTENT) 
     @Operation(summary = "Delete goal", description = "Deletes a goal by ID for a specific user")
     public void deleteGoal(@PathVariable Long id, @RequestParam Long userId) {
-        log.info("Deleting goal with id: {} for userId: {}", id, userId);
+        log.info("Deleting goal {} for userId: {}", id, userId);
         goalService.deleteGoal(id, userId);
     }
 }
