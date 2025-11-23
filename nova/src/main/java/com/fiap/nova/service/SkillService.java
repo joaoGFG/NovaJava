@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,20 +36,32 @@ public class SkillService {
         return new PageImpl<>(pageContent, pageable, userSkills.size());
     }
 
-    public Skill createSkill(Skill skill, Long userId) {
+    public Skill createSkill(Skill skillInput, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-        skill.setId(null);
-        skill.setName(skill.getName().trim());
-        if (skill.getType() == null) skill.setType(SkillType.HARD);
+        String skillName = skillInput.getName().trim();
+        SkillType skillType = (skillInput.getType() == null) ? SkillType.HARD : skillInput.getType();
+
+        Optional<Skill> existingSkill = skillRepository.findByNameIgnoreCase(skillName);
+
+        Skill skillToLink;
+
+        if (existingSkill.isPresent()) {
+            skillToLink = existingSkill.get();
+        } else {
+            skillInput.setId(null);
+            skillInput.setName(skillName);
+            skillInput.setType(skillType);
+            skillToLink = skillRepository.save(skillInput);
+        }
+
+        if (!user.getSkills().contains(skillToLink)) {
+            user.getSkills().add(skillToLink);
+            userRepository.save(user);
+        }
         
-        Skill savedSkill = skillRepository.save(skill);
-        
-        user.getSkills().add(savedSkill);
-        userRepository.save(user);
-        
-        return savedSkill;
+        return skillToLink;
     }
 
     public Skill getSkillById(Long id) {
@@ -59,21 +72,20 @@ public class SkillService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
         
-        Skill skill = getSkillById(skillId);
-        if (skill == null) throw new RuntimeException("Skill not found");
-        
-        if (!user.getSkills().contains(skill)) {
+        Skill oldSkill = getSkillById(skillId);
+        if (oldSkill == null) throw new RuntimeException("Skill not found");
+        if (!user.getSkills().contains(oldSkill)) {
             throw new RuntimeException("Skill does not belong to user: " + userId);
         }
-        
-        skill.setName(skillDetails.getName().trim());
-        if (skillDetails.getType() != null) {
-            skill.setType(skillDetails.getType());
-        }
-        
-        return skillRepository.save(skill);
+        user.getSkills().remove(oldSkill);
+
+        Skill newSkillInput = new Skill();
+        newSkillInput.setName(skillDetails.getName());
+        newSkillInput.setType(skillDetails.getType());
+
+        return createSkill(newSkillInput, userId);
     }
-    
+
     public void deleteSkill(Long skillId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
@@ -87,6 +99,5 @@ public class SkillService {
         
         user.getSkills().remove(skill);
         userRepository.save(user);
-        skillRepository.delete(skill);
     }
 }

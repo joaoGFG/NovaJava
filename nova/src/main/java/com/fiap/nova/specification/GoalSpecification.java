@@ -9,9 +9,9 @@ public class GoalSpecification {
     public static Specification<Goal> withFilters(GoalFilters filters) {
         return Specification
                 .anyOf(
-                        byTitulo(filters.titulo()),
-                        byDescricao(filters.descricao()),
-                        byCategoriaId(filters.categoriaId()),
+                        byTitulo(filters.title()),
+                        byDescricao(filters.description()),
+                        byCategoriaId(filters.categoryId()),
                         byStatusId(filters.statusId())
                 );
     }

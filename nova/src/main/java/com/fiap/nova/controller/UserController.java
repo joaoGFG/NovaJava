@@ -1,5 +1,6 @@
 package com.fiap.nova.controller;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -16,6 +17,7 @@ import com.fiap.nova.filters.UserFilters;
 import com.fiap.nova.model.User;
 import com.fiap.nova.service.UserService;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 
 @RestController
@@ -37,9 +39,9 @@ public class UserController {
 
     @GetMapping
     public PagedModel<EntityModel<User>> getAll(
-            UserFilters filters,
-            @PageableDefault(size = 10, sort = "name") Pageable pageable,
-            PagedResourcesAssembler<User> assembler
+            @ParameterObject UserFilters filters,       
+            @ParameterObject @PageableDefault(size = 10, sort = "name") Pageable pageable, 
+            @Parameter(hidden = true) PagedResourcesAssembler<User> assembler 
     ) {
         var page = userService.findAll(pageable, filters);
         return assembler.toModel(page, User::toEntityModel);

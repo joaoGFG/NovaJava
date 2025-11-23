@@ -14,9 +14,9 @@ public class UserSpecification {
             return spec;
         }
 
-        if (filters.getNome() != null && !filters.getNome().isBlank()) {
+        if (filters.getName() != null && !filters.getName().isBlank()) {
             spec = spec.and((root, query, cb) ->
-                cb.like(cb.upper(root.get("nome")), "%" + filters.getNome().toUpperCase() + "%")
+                cb.like(cb.upper(root.get("name")), "%" + filters.getName().toUpperCase() + "%")
             );
         }
 

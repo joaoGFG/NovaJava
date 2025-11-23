@@ -50,16 +50,6 @@ public class GoalController {
         return newGoal.toEntityModel();
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get goal by ID", description = "Returns a specific goal with HATEOAS links")
-    public EntityModel<Goal> getById(@PathVariable Long id) {
-        var goal = goalService.getGoalById(id);
-        if (goal == null) {
-            throw new RuntimeException("Goal not found");
-        }
-        return goal.toEntityModel();
-    }
-
     @PutMapping("/{id}")
     @Operation(summary = "Update goal", description = "Updates an existing goal for a specific user")
     public EntityModel<Goal> updateGoal(@PathVariable Long id, @RequestParam Long userId, @RequestBody @Valid Goal goal) {

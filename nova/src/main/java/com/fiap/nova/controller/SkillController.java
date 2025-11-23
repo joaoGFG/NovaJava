@@ -48,17 +48,6 @@ public class SkillController {
         return skillService.createSkill(skill, userId);
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get skill by ID", description = "Returns a specific skill")
-    public EntityModel<Skill> getById(@PathVariable Long id) {
-        log.info("Getting skill with id: {}", id);
-        var skill = skillService.getSkillById(id);
-        if (skill == null) {
-            throw new RuntimeException("Skill not found");
-        }
-        return skill.toEntityModel();
-    }
-
     @PutMapping("/{id}")
     @Operation(summary = "Update skill", description = "Updates an existing skill for a specific user")
     public EntityModel<Skill> updateSkill(@PathVariable Long id, @RequestParam Long userId, @RequestBody @Valid Skill skill) {

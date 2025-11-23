@@ -1,8 +1,8 @@
 package com.fiap.nova.filters;
 
 public record GoalFilters(
-    String titulo,
-    String descricao,
-    Long categoriaId,
+    String title,
+    String description,
+    Long categoryId,
     Long statusId
 ) {}

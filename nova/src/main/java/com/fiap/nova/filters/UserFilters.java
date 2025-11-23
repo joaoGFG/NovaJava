@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserFilters {
     
-    private String nome;
+    private String name;
     private String email;
     private String professionalGoal;
 }
