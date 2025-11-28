@@ -9,7 +9,11 @@
 
 **Nova** é uma aplicação completa de gerenciamento de metas e desenvolvimento de habilidades, desenvolvida com Spring Boot. O sistema permite que usuários criem e acompanhem suas metas pessoais e profissionais, registrem habilidades, e interajam com um chatbot inteligente alimentado por IA (Perplexity AI) para obter orientações personalizadas.
 
-### 🎯 Funcionalidades Principais
+## Video Pitch (3:00)
+[<img width="978" height="516" alt="image" src="https://github.com/user-attachments/assets/fa9d667e-9b05-415e-ba68-d415592f1db6"/>](https://www.youtube.com/watch?v=lCgX5b70VBc)
+
+
+## 🎯 Funcionalidades Principais
 
 - **Gerenciamento de Usuários**: Cadastro, autenticação JWT e perfil de usuário
 - **Sistema de Metas**: Criação, acompanhamento e categorização de metas com status
